@@ -1,51 +1,30 @@
 #include <Servo.h>
 
-//This code can be used for any purpose.
 
+//#include Servo ESC1;
 Servo ESC1;
 
 int pos = 0; //Sets position variable
 
 void arm(){
-
-setSpeed(0); //Sets speed variable delay(1000);
-
+  setSpeed(0); //Sets speed variable delay(1000);
 }
 
-void setSpeed(int speed){
-
-int angle = map(speed, 0, 100, 0, 180); //Sets servo positions to different speeds ESC1.write(angle);
-
+void setSpeed(int value){
+  int angle = map(value, 0, 100, 0, 180); //Sets servo positions to different speeds ESC1.write(angle);
 }
 
 void setup() {
-
-ESC1.attach(9); //Adds ESC to certain pin. arm();
-
+  ESC1.attach(5); //Adds ESC to certain pin. arm();
+  Serial.begin(9600);
+  ESC1.writeMicroseconds(0);
+  delay (500);
 }
 
 void loop() {
-
-int speed; //Implements speed variable
-
-for(speed = 0; speed <= 70; speed += 5) { //Cycles speed up to 70% power for 1 second
-
-setSpeed(speed); //Creates variable for speed to be used in in for loop
-
-delay(1000);
-
-}
-
-delay(4000); //Stays on for 4 seconds
-
-for(speed = 70; speed > 0; speed -= 5) { // Cycles speed down to 0% power for 1 second
-
-setSpeed(speed); delay(1000);
-
-}
-
-setSpeed(0); //Sets speed variable to zero no matter what
-
-delay(1000); //Turns off for 1 second
-
+  int value = map( analogRead(0), 0, 1024, 0, 2000);
+  Serial.println(value);
+//  value = 1800;
+  ESC1.writeMicroseconds(value);
+  delay(100);
 }
