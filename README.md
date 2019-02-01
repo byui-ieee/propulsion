@@ -10,8 +10,6 @@ rotational control:
 
     pitch
 
-    roll
-
     yaw
 
 forward and reverse thrust
