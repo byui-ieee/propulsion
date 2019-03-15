@@ -7,10 +7,10 @@ Servo ESC3;            // Left top motor for down
 Servo ESC4;            // Left bottom motor for up/down
 
 // define control pins for motors. They have to be on the PWM pins.
-#define RFRONT 3        // Right front motor on pin 3
-#define RBACK 5         // Right back motor on pin 5
-#define LFRONT 6        // Left front motor on pin 6
-#define LBACK 9         // Left back motor on pin 9
+#define FRONT 3        // Right front motor on pin 3
+#define BACK 5         // Right back motor on pin 5
+#define RIGHT 6        // Left front motor on pin 6
+#define LEFT 9         // Left back motor on pin 9
 
 // directional instructions. Values can be changed when we know what we will be receiving from the pi.
 #define PITCH_FORWARD 'w'
@@ -23,8 +23,8 @@ Servo ESC4;            // Left bottom motor for up/down
 #define GO_BACKWARD 'k'
 int command = 0;
 
-#define forward 1600
-#define backward 1000
+#define forward 1900
+#define backward 1450
 #define stay 1500
 
 int pos = 0; //Sets position variable
@@ -41,12 +41,12 @@ void setSpeed(int value){
  * SET MOTOR SPEED
  * Sets the speed of each individual motor.
  ****************************************************************/
-void setMotorSpeed(int rFront, int rBack, int lFront, int lBack, int right, int left)
+void setMotorSpeed(int front, int back, int right, int left)
 {
-  ESC1.writeMicroseconds(rFront);
-  ESC2.writeMicroseconds(rBack);
-  ESC3.writeMicroseconds(lFront);
-  ESC4.writeMicroseconds(lBack);
+  ESC1.writeMicroseconds(front);
+  ESC2.writeMicroseconds(back);
+  ESC3.writeMicroseconds(left);
+  ESC4.writeMicroseconds(right);
 }
 
 /************************************************
@@ -54,10 +54,10 @@ void setMotorSpeed(int rFront, int rBack, int lFront, int lBack, int right, int 
  * 
  ************************************************/
 void setup() {
-  ESC1.attach(RFRONT); //Adds ESC to certain pin. arm();
-  ESC2.attach(RBACK);
-  ESC3.attach(LFRONT);
-  ESC4.attach(LBACK);
+  ESC1.attach(FRONT); //Adds ESC to certain pin. arm();
+  ESC2.attach(BACK);
+  ESC3.attach(RIGHT);
+  ESC4.attach(LEFT);
   Serial.begin(9600);
   ESC1.writeMicroseconds(stay);
   ESC2.writeMicroseconds(stay);
@@ -75,53 +75,37 @@ void loop() {
 //  Serial.println(Rvalue);
 
 // right now we're using fixed values for the motors so no variable speeds for now.
+  //int front, int back, int right, int left
   switch(command)
   {
     case GO_FORWARD:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(stay, stay, stay, stay, forward, forward);            // set both thrusters forward to move sub forward
+      setMotorSpeed(stay, stay, forward, forward);            // set both thrusters forward to move sub forward
       break;
     case GO_BACKWARD:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(stay, stay, stay, stay, backward, backward);          // set both thrusters backward to move sub backward
+      setMotorSpeed(stay, stay, backward, backward);          // set both thrusters backward to move sub backward
       break;
     case GO_LEFT:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(stay, stay, stay, stay, forward, backward);           // set left thruster backward and right thruster forward to turn left
+      setMotorSpeed(stay, stay, forward, backward);           // set left thruster backward and right thruster forward to turn left
       break;
     case GO_RIGHT:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(stay, stay, stay, stay, backward, forward);           // set left thruster forward and right thruster backward to turn right
+      setMotorSpeed(stay, stay, backward, forward);           // set left thruster forward and right thruster backward to turn right
       break;
     case PITCH_FORWARD:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(backward, stay, backward, stay, stay, stay);         // set front top motors backward to pitch forward 
+      setMotorSpeed(backward, forward, stay, stay);         // set front top motors backward to pitch forward 
       break;
     case PITCH_BACKWARD:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(forward, stay, forward, stay, stay, stay);           // set front top motors forward to pitch backward
+      setMotorSpeed(forward, backward, stay, stay);           // set front top motors forward to pitch backward
       break;
     case GO_UP:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(forward, forward, forward, forward, stay, stay);     // set all top motors forward to move upward
+      setMotorSpeed(forward, forward, stay, stay);     // set all top motors forward to move upward
       break;
     case GO_DOWN:
-      setMotorSpeed(stay, stay, stay, stay, stay, stay);
-      delay(7000);
-      setMotorSpeed(backward, backward, backward, backward, stay, stay); // set all top motorw backward to move downward
+      setMotorSpeed(backward, backward, stay, stay); // set all top motorw backward to move downward
       break;
     case 'v':
-      setMotorSpeed(stay, stay, stay, stay, stay, stay); // set all top motorw backward to move downward
+      setMotorSpeed(stay, stay, stay, stay); // set all top motorw backward to move downward
       break;
     default:
-      //setMotorSpeed(stay, stay, stay, stay, stay, stay);                 // turn all motors off
       break;
   }
   delay(100);
